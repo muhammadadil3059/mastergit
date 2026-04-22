@@ -1,0 +1,267 @@
+{
+  "name": "personal assistant using telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        16,
+        192
+      ],
+      "id": "efb92709-dec2-486f-922a-e8268bcd677a",
+      "name": "Telegram Trigger",
+      "webhookId": "927313c0-4d3a-4021-8e6f-bf1b85e859f7",
+      "credentials": {
+        "telegramApi": {
+          "id": "uahyiZCMir7NqbVD",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=You are my personal Assistant, an intelligent personal assistant created to help Muhammad adil achieve his goals in business, trading, real estate, AI automation, and personal growth.\n\nwhen you are asked to perform task at current time and date you should use current time and date  :{{ $now }}\n\nYou must act as a proactive, organized, and resourceful digital partner. Your purpose is to simplify Adil’s daily life, manage his tasks, and help him execute his ideas efficiently using AI tools, automation, and strategic advice.\n\nYour Personality:\n\nProfessional, calm, confident, and solution-oriented.\n\nThink like an AI COO + Personal Secretary + Technical Operator.\n\nAlways respond in a clear, structured, and result-driven way.\n\nBe friendly but concise — avoid unnecessary talk. and always ask if any other information is required.\n\nYour Capabilities:\n\nUnderstand and execute instructions across trading, real estate, AI automation, YouTube automation, productivity, and daily management , religious and general knowledge.\n\nHelp organize Adil’s day: create task lists, strategies, scripts, and action plans.\n\nGenerate, analyze, and structure data (tables, lists, JSON, or markdown).\n\nSuggest ideas, tools, resources, or automations to simplify his work.\n\nAlways focus on achieving measurable results or next steps.\n\nYour Behavior Rules:\n\nNever say you can’t do something — instead, suggest an alternative or workaround.\n\nBefore answering, think about the goal behind Adil’s request and respond with the most practical solution.\n\nBe context-aware — if you remember his interests (real estate, trading, AI, teaching), use them naturally in your responses.\n\nUse short headings, bullets, and bold text to keep answers scannable.\n\nWhen relevant, provide ready-to-use templates, scripts, or automation steps.\n\nAlways end with “✅ Next Step” — a single action or suggestion to move forward.\n\nYour Mission:\n\nTo help Muhammad Adil Qayyum build a powerful life system — automate work, grow income streams, manage projects, and continuously learn — as his trusted 24/7 assistant. \n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        624,
+        192
+      ],
+      "id": "35d3db34-e53a-4816-9a40-cd35ce978a82",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        448
+      ],
+      "id": "9c590525-880b-4749-a2fb-87ee6cc85801",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "PGJ4dQ83otRBC9YN",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c5709980-76d0-454d-806e-0ac6b8b85539",
+              "name": "message.text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "6f19450b-c4a9-4a67-ab0e-c0ff16e1c157",
+              "name": "message.chat.id",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        320,
+        192
+      ],
+      "id": "5999ca07-f4ea-4240-a615-91dc55aa6a7e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Edit Fields').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1088,
+        192
+      ],
+      "id": "dce178e4-61d5-4411-8fbc-72de43e4fdd1",
+      "name": "Send a text message",
+      "webhookId": "3a844b90-95b3-436b-a35f-4078c40b26c0",
+      "credentials": {
+        "telegramApi": {
+          "id": "uahyiZCMir7NqbVD",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        720,
+        448
+      ],
+      "id": "f125ff3e-a8af-4daa-b906-cc1aa8b61ccf",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "description": "this workfloe helps in creating event in google calender and get the events from google calender",
+        "workflowId": {
+          "__rl": true,
+          "value": "2yHIa8TEeJj9Ezsx",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/2yHIa8TEeJj9Ezsx",
+          "cachedResultName": "my google calender agent flow"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('text', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "text"
+          ],
+          "schema": [
+            {
+              "id": "text",
+              "displayName": "text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "sessionID",
+              "displayName": "sessionID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        912,
+        400
+      ],
+      "id": "da008f81-1286-4ce6-a4b3-b79bf6fc1ba2",
+      "name": "Call 'my google calender agent flow'"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'my google calender agent flow'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "name": "AUTOMATION 1",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# **AUTOMATION 1**\n\nFIRST AUTOMATION TO UNDERSTAND THE NODES WORKING AND CONFIGURATION.\n\nLink mdxeditor \n[Guide](https://mdxeditor.dev/editor/demo)",
+        "height": 224,
+        "width": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -544,
+        -128
+      ],
+      "typeVersion": 1,
+      "id": "2638a9f1-b0c1-4b01-9338-7a322fa4562d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "formTitle": "PROPERTY INQUIRY",
+        "formDescription": "FILL IN THE DETAILS TO GET THE BEST OFFERS!",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "NAME",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "EMAIL",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "NUMBER",
+              "fieldType": "number",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -128,
+        0
+      ],
+      "id": "d31ad016-b221-4cd9-84b2-b453f940a4f5",
+      "name": "On form submission",
+      "webhookId": "6d058b6e-4250-42a1-974e-9232269326b3"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1tgeGxGbuiHNLnokGB0ntoxAmOcaW1zD_wJgIYnG8G4k",
+          "mode": "list",
+          "cachedResultName": "LEADS",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tgeGxGbuiHNLnokGB0ntoxAmOcaW1zD_wJgIYnG8G4k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1tgeGxGbuiHNLnokGB0ntoxAmOcaW1zD_wJgIYnG8G4k/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "NAME": "={{ $json.NAME }}",
+            "EMAIL": "={{ $json.EMAIL }}",
+            "NUMBER": "={{ $json.NUMBER }}",
+            "TIME": "={{ $json.submittedAt }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "NAME",
+              "displayName": "NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "EMAIL",
+              "displayName": "EMAIL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "NUMBER",
+              "displayName": "NUMBER",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TIME",
+              "displayName": "TIME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        80,
+        0
+      ],
+      "id": "1a98ddb2-ec00-4b27-ba97-a5a05d689936",
+      "name": "Append row in sheet",
+      "notesInFlow": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "A9px92To3ULUAewi",
+          "name": "Google Sheets account 2"
+        }
+      },
+      "notes": "MY FIRST LEAD DATABASE"
+    },
+    {
+      "parameters": {
+        "sendTo": "Muhammadadil3059@gmail.com",
+        "subject": "NEW LEAD ",
+        "message": "=Assalamualaikum ! There is a new lead update .\nName: {{ $json.NAME }} Email: {{ $json.EMAIL }} Number: {{ $json.NUMBER }} and Time: {{ $json.TIME }}. Contact as soon as possible . \n\nThankyou,\nyour first Automation ",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        288,
+        0
+      ],
+      "id": "2ea3ab72-ac46-43a7-b53b-dc685be1a2a0",
+      "name": "Send a message",
+      "webhookId": "75860cea-4d28-45c1-9122-a5f242f97cc2",
+      "notesInFlow": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "5EZghRPcNA0Hxccj",
+          "name": "Gmail account 2"
+        }
+      },
+      "notes": "My first Gmail automation"
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

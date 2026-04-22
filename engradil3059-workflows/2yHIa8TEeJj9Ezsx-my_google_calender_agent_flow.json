@@ -1,0 +1,204 @@
+{
+  "name": "my google calender agent flow",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "text"
+            },
+            {
+              "name": "sessionID"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -368,
+        -96
+      ],
+      "id": "4d45ae97-9a2e-4f2a-a695-88263579fd90",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}\n",
+        "options": {
+          "systemMessage": "=You are Adil’s personal Google Calendar AI assistant  {{ $now }}     Your job is to understand natural language scheduling requests, create events, update existing events, delete events when explicitly asked, and summarize his schedule for any date or time range. Always interpret dates and times in Pakistan Standard Time (UTC+5) unless stated otherwise. Whenever the user gives a task that should be added to the calendar, automatically prepare structured JSON output for n8n with the correct action (create, update, delete, or list), along with the event title, description, start time, end time, all-day status, or query range. If any detail is missing, ask only one clear clarifying question before proceeding. Always be accurate, concise, and act like a smart executive assistant who keeps Adil organized and productive. always provide current time and date .\ncurrent time and date is {{ $now }}\n\nin case you have to get the events , do not create a new event , use get event tool and you can get as many events.\n\nmake sure you provide the response in a polite manner witout any links.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -160,
+        -96
+      ],
+      "id": "b127844a-78df-4c70-9490-e0f07d797e23",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -224,
+        192
+      ],
+      "id": "79d92ad7-f3de-4ff2-9c9f-5f9239e004e1",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "PGJ4dQ83otRBC9YN",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=00-{{ $json.sessionID }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -112,
+        192
+      ],
+      "id": "a80bdce2-92ba-4ccf-b22c-1d6d250d8f2f",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "muhammadadil3059@gmail.com",
+          "mode": "list",
+          "cachedResultName": "muhammadadil3059@gmail.com"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        160
+      ],
+      "id": "e64cfbea-4b60-4ec3-92b9-a46458139805",
+      "name": "Create an event in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Kp5ie8rKhlDIFF3A",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "muhammadadil3059@gmail.com",
+          "mode": "list",
+          "cachedResultName": "muhammadadil3059@gmail.com"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        192,
+        -96
+      ],
+      "id": "14bf81e2-200d-4859-abef-3966d63d8dc0",
+      "name": "Get many events",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "Kp5ie8rKhlDIFF3A",
+          "name": "Google Calendar account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Get many events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

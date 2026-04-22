@@ -1,0 +1,456 @@
+{
+  "name": "AUTOMATION 2",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.genderize.io/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $json.NAME }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "6c6a2af6-778b-4aaf-b31b-f284a5ae833f",
+      "name": "HTTP Request",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://api.nationalize.io",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $('Google Sheets Trigger').item.json.NAME }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "40f41f73-82bb-420c-8299-e0e951a6c351",
+      "name": "HTTP Request1",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://api.agify.io",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $json.name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1456,
+        0
+      ],
+      "id": "96aa6693-6f2c-4a67-9da0-74807f244a86",
+      "name": "HTTP Request2",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "muhammadadil3059@gmail.com",
+        "subject": "New Lead",
+        "message": "=Assalamualaikum Muhammad Adil\n\nThere is a New Lead  {{ $json.NAME }} has signed up. below are his details:\n\nNumber:{{ $json.NUMBER }}\nbudget:{{ $json.BUDGET }}\n\nHERE ARE THE EXPECTED AGE, NATIONALITY & GENDER :\n\nAGE:{{ $json.AGE }}\n\nGENDER:{{ $json.GENDER }}\n\nNATIONALITY:{{ $json.NATIONALITY }}\n\nCONTACT AS SOON AS POSSIBLE.\n\nTHANKYOU",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2144,
+        0
+      ],
+      "id": "d73aeaf1-8ac9-411e-820f-621304738258",
+      "name": "Send a message",
+      "webhookId": "4903cd86-b0b9-486c-9050-e1a4728ac988",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "HNxw8d0hANGu4elT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "16ztRodYVAWckssfv5zEtbJ2Rudc6kB2lmx3WVzVmtWk",
+          "mode": "list",
+          "cachedResultName": "POTENTIAL_CUSTOMERS",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16ztRodYVAWckssfv5zEtbJ2Rudc6kB2lmx3WVzVmtWk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16ztRodYVAWckssfv5zEtbJ2Rudc6kB2lmx3WVzVmtWk/edit#gid=0"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        192,
+        0
+      ],
+      "id": "92d93269-de28-455c-92c6-6fa2afda3077",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "zsZUL7tGrA6Jmygl",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "16ztRodYVAWckssfv5zEtbJ2Rudc6kB2lmx3WVzVmtWk",
+          "mode": "list",
+          "cachedResultName": "POTENTIAL_CUSTOMERS",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16ztRodYVAWckssfv5zEtbJ2Rudc6kB2lmx3WVzVmtWk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16ztRodYVAWckssfv5zEtbJ2Rudc6kB2lmx3WVzVmtWk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $('Google Sheets Trigger').item.json.ID }}",
+            "NAME": "={{ $('Google Sheets Trigger').item.json.NAME }}",
+            "NUMBER": "={{ $('Google Sheets Trigger').item.json.NUMBER }}",
+            "BUDGET": "={{ $('Google Sheets Trigger').item.json.BUDGET }}",
+            "GENDER": "={{ $('HTTP Request').item.json.gender }}",
+            "AGE": "={{ $json.age }}",
+            "NATIONALITY": "={{ $('HTTP Request1').item.json.country.first().country_id }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "NAME",
+              "displayName": "NAME",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "NUMBER",
+              "displayName": "NUMBER",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "BUDGET",
+              "displayName": "BUDGET",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "GENDER",
+              "displayName": "GENDER",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "NATIONALITY",
+              "displayName": "NATIONALITY",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "AGE",
+              "displayName": "AGE",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1664,
+        0
+      ],
+      "id": "4bd873ae-0629-44e6-83c1-1ba2ae2b35c0",
+      "name": "Append or update row in sheet",
+      "executeOnce": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "MnB4FcR56M7wulCo",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        0
+      ],
+      "id": "d3323db1-000e-4d9f-8a31-563d2d17ccfc",
+      "name": "Wait",
+      "webhookId": "23d79189-ae6d-4ea0-acdf-6de398663560"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "625f9bda-50dc-42ba-a5e1-b67d3f3b8add",
+      "name": "Wait1",
+      "webhookId": "00c93fbb-b1a7-4655-b9f2-fd8894c7563a"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "a8c9b24d-65b8-44ad-8df4-d068b40dff33",
+      "name": "Wait2",
+      "webhookId": "9c0c068a-61b8-4cc2-84d4-b8e3d4143e06"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=you are my helpful assisstant who hwlps me writing better emails which i can to my self.\nhere is the format below:\n\nAssalamualaikum Muhammad Adil\n\nThere is a New Lead  {{ $json.NAME }} has signed up. below are his details:\n\nNumber:{{ $json.NUMBER }}\nbudget:{{ $json.BUDGET }}\n\nHERE ARE THE EXPECTED AGE, NATIONALITY & GENDER :\n\nAGE:{{ $json.AGE }}\n\nGENDER:{{ $json.GENDER }}\n\nNATIONALITY:{{ $json.NATIONALITY }}\n\nCONTACT AS SOON AS POSSIBLE.\n\nTHANKYOU\nyour ai assisstant\n\nmake sure email provides explaination in depth."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        1872,
+        0
+      ],
+      "id": "947b965b-447e-419d-88e5-c8078709fc6d",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "PGJ4dQ83otRBC9YN",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Google Sheets Trigger": {
+      "documentId": "16ztRodYVAWckssfv5zEtbJ2Rudc6kB2lmx3WVzVmtWk",
+      "sheetId": 0,
+      "lastRevision": 60,
+      "lastRevisionLink": "https://docs.google.com/spreadsheets/export?id=16ztRodYVAWckssfv5zEtbJ2Rudc6kB2lmx3WVzVmtWk&revision=60&exportFormat=xlsx",
+      "lastIndexChecked": 8
+    }
+  },
+  "pinData": {},
+  "triggerCount": 1,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}
